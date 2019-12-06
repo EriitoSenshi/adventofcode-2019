@@ -11,9 +11,12 @@ def get_fuel_sum(mass):
 
 
 f = open('inputs/day1.txt', 'r')
-x = 0
+fuel_total_1 = 0
+fuel_total_2 = 0
 for line in f:
-    y = get_fuel_sum(float(line))
-    x += y
+    fuel_required_1 = math.floor(float(line) / 3) - 2
+    fuel_total_1 += fuel_required_1
+    fuel_required_2 = get_fuel_sum(float(line))
+    fuel_total_2 += fuel_required_2
 f.close()
-print(x)
+print(fuel_total_1, fuel_total_2)
