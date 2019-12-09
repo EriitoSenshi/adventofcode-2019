@@ -17,7 +17,6 @@ for i in range(x, y):  # Iterating through the range
         if increasing_digit:
             increasing_digits.append(i)
 
-print(increasing_digits)
 print(len(increasing_digits))
 
 # Part 2
@@ -34,5 +33,4 @@ for num in increasing_digits:  # Iterating through the accepted numbers of part 
     if is_password:
         correct_passwords.append(num)
 
-print(correct_passwords)
 print(len(correct_passwords))
