@@ -1,7 +1,42 @@
-import math
+from sympy import Point2D
+from sympy import Segment2D
+from sympy import intersection
+
+
+class Wire:
+    def __init__(self):
+        self.coordinates = []
+        self.segments = []
+        self.x = 0
+        self.y = 0
+
+    def move(self, movement):
+        if movement[0] == 'U':
+            self.y += int(movement[1:])
+            self.coordinates.append(Point2D(self.x, self.y))
+        elif movement[0] == 'D':
+            self.y -= int(movement[1:])
+            self.coordinates.append(Point2D(self.x, self.y))
+        elif movement[0] == 'R':
+            self.x += int(movement[1:])
+            self.coordinates.append(Point2D(self.x, self.y))
+        elif movement[0] == 'L':
+            self.x -= int(movement[1:])
+            self.coordinates.append(Point2D(self.x, self.y))
+
+    def add_segments(self):
+        for i in range(len(self.coordinates) - 1):
+            self.segments.append(Segment2D(self.coordinates[i], self.coordinates[i + 1]))
+
+    def get_intersection(self, wire):
+        inters = []
+        for segment1 in self.segments:
+            for segment2 in wire.segments:
+                inters.append(intersection(segment1, segment2))
+        return inters
+
 
 f = open('inputs/day3.txt', 'r')
-
 paths = []
 for line in f:
     path = []
@@ -11,71 +46,20 @@ for line in f:
     paths.append(path)
 f.close()
 
-coordinates_1 = [(0, 0)]
-coordinates_2 = [(0, 0)]
+wire1 = Wire()
+wire2 = Wire()
 
+for movement1 in paths[0]:
+    wire1.move(movement1)
+for movement2 in paths[1]:
+    wire2.move(movement2)
 
-def get_coordinates(coordinates, n):
-    for pa in paths[n]:
-        if pa[0] == 'R':
-            x0 = coordinates[len(coordinates) - 1][0]
-            x1 = x0 + int(pa[1:len(pa)])
-            y = coordinates[len(coordinates) - 1][1]
-            for x in range(x0 + 1, x1 + 1):
-                if (x, y) not in coordinates:
-                    coordinates.append((x, y))
-        elif pa[0] == 'L':
-            x0 = coordinates[len(coordinates) - 1][0]
-            x1 = x0 - int(pa[1:len(pa)])
-            y = coordinates[len(coordinates) - 1][1]
-            for x in range(x0 - 1, x1 - 1, -1):
-                if (x, y) not in coordinates:
-                    coordinates.append((x, y))
-        elif pa[0] == 'U':
-            x = coordinates[len(coordinates) - 1][0]
-            y0 = coordinates[len(coordinates) - 1][1]
-            y1 = y0 + int(pa[1:len(pa)])
-            for y in range(y0 + 1, y1 + 1):
-                if (x, y) not in coordinates:
-                    coordinates.append((x, y))
-        elif pa[0] == 'D':
-            x = coordinates[len(coordinates) - 1][0]
-            y0 = coordinates[len(coordinates) - 1][1]
-            y1 = y0 - int(pa[1:len(pa)])
-            for y in range(y0 - 1, y1 - 1, -1):
-                if (x, y) not in coordinates:
-                    coordinates.append((x, y))
+wire1.add_segments()
+wire2.add_segments()
 
+intersections = wire1.get_intersection(wire2)
+distances = []
+for inter in intersections:
+    distances.append(abs(inter[0]) + abs(inter[1]))
 
-def get_manhattan_distance(coord):
-    return math.fabs(coord[0]) + math.fabs(coord[1])
-
-
-def get_path_length(coord):
-    return coordinates_1.index(coord) + 1 + coordinates_2.index(coord) + 1
-
-
-get_coordinates(coordinates_1, 0)
-get_coordinates(coordinates_2, 1)
-intersections = []
-path_lengths = []
-coordinates_1.remove(coordinates_1[0])
-coordinates_2.remove(coordinates_2[0])
-
-# This takes a while
-for coordinate in coordinates_1:
-    if coordinate in coordinates_2:
-        intersections.append(coordinate)
-
-min_distance = get_manhattan_distance(intersections[0])
-min_path_length = get_path_length(intersections[0])
-for intersection in intersections:
-    distance = get_manhattan_distance(intersection)
-    if distance < min_distance:
-        min_distance = distance
-    path_length = get_path_length(intersection)
-    if path_length < min_path_length:
-        min_path_length = path_length
-
-print(min_distance)
-print(min_path_length)
+min_distance = min(distances)
