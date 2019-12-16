@@ -45,7 +45,3 @@ for line in f:
             object_dict[obj1.name].orbits += 1
 
 
-
-print(count)
-
-
