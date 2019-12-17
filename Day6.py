@@ -44,7 +44,7 @@ for line in f:
         objects[obj_name_2] = Obj(obj_name_2)
     objects[obj_name_1].add_orbit(objects[obj_name_2])
     objects[obj_name_2].orbit_of = objects[obj_name_1]
-
+f.close()
 # Part 1: Counting all the direct and indirect connections for the whole graph of orbits
 counter = 0
 for obj in objects.values():

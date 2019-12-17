@@ -25,9 +25,9 @@ def multiply_op(i, array):
 def output_op(i, array):
     index = array[i + 1]
     if array[i] == 4:
-        print(array[index])
+        return array[index]
     elif array[i] == 104:
-        print(index)
+        return index
 
 
 def jump_if_true(i, array):
@@ -133,7 +133,7 @@ def intcode_computer(arr):
             arr[index] = input_int
             n += 2
         elif s[-1] == '4':
-            output_op(n, arr)
+            print(output_op(n, arr))
             n += 2
         elif s[-1] == '5':
             instruction = jump_if_true(n, arr)
@@ -166,4 +166,4 @@ for line in f:
         int_code_1.append(int(num))
 f.close()
 
-intcode_computer(int_code_1)
+# intcode_computer(int_code_1)

@@ -26,14 +26,10 @@ def intcode_computer(arr):
     """
     for n in range(0, len(arr), 4):
         if arr[n] == 1:
-            index1 = arr[n + 1]
-            index2 = arr[n + 2]
-            index3 = arr[n + 3]
+            index1, index2, index3 = arr[n + 1], arr[n + 2], arr[n + 3]
             arr[index3] = arr[index1] + arr[index2]
         elif arr[n] == 2:
-            index1 = arr[n + 1]
-            index2 = arr[n + 2]
-            index3 = arr[n + 3]
+            index1, index2, index3 = arr[n + 1], arr[n + 2], arr[n + 3]
             arr[index3] = arr[index1] * arr[index2]
         elif arr[n] == 99:
             return arr[0]
