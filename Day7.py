@@ -1,5 +1,5 @@
 import itertools
-from Day5 import add_op, multiply_op, output_op, jump_if_true, jump_if_false, less_than, equals
+from Day5 import check_for_modes
 
 
 def intcode_computer(arr, first_input, second_input):
@@ -11,40 +11,44 @@ def intcode_computer(arr, first_input, second_input):
     use_second_input = False
     n = 0
     while n < len(arr):
+        parameters = check_for_modes(arr, n)
         s = str(arr[n])
         if s[-1] == '1':
-            add_op(n, arr)
+            arr[arr[n + 3]] = parameters[0] + parameters[1]
             n += 4
         elif s[-1] == '2':
-            multiply_op(n, arr)
+            arr[arr[n + 3]] = parameters[0] * parameters[1]
             n += 4
         elif s == '3':
-            index = arr[n + 1]
             if not use_second_input:
-                arr[index] = first_input
+                arr[arr[n + 1]] = first_input
                 use_second_input = True
             else:
-                arr[index] = second_input
+                arr[arr[n + 1]] = second_input
             n += 2
         elif s[-1] == '4':
-            return output_op(n, arr)
+            return parameters[0]
         elif s[-1] == '5':
-            instruction = jump_if_true(n, arr)
-            if instruction is not None:
-                n = instruction
+            if parameters[0] != 0:
+                n = parameters[1]
             else:
                 n += 3
         elif s[-1] == '6':
-            instruction = jump_if_false(n, arr)
-            if instruction is not None:
-                n = instruction
+            if parameters[0] == 0:
+                n = parameters[1]
             else:
                 n += 3
         elif s[-1] == '7':
-            less_than(n, arr)
+            if parameters[0] < parameters[1]:
+                arr[arr[n + 3]] = 1
+            else:
+                arr[arr[n + 3]] = 0
             n += 4
         elif s[-1] == '8':
-            equals(n, arr)
+            if parameters[0] == parameters[1]:
+                arr[arr[n + 3]] = 1
+            else:
+                arr[arr[n + 3]] = 0
             n += 4
         elif s == '99':
             return
@@ -74,20 +78,20 @@ def get_sequences(string):
 
 
 # Part 1
-def amplifier_program(length, string, first_input):
+def amplifier_program(length, string):
     """
     Function used for part 1. Loops through the amplifiers once
 
 
     """
     if length == 0:
-        return intcode_computer(input_array, int(string[length]), first_input)
-    return intcode_computer(input_array, int(string[length]), amplifier_program(length - 1, string, first_input))
+        return intcode_computer(input_array, int(string[length]), 0)
+    return intcode_computer(input_array, int(string[length]), amplifier_program(length - 1, string))
 
 
 result_1 = []
-for s in get_sequences('01234'):
-    result_1.append(amplifier_program(len(s) - 1, s, 0))
+for sequence in get_sequences('01234'):
+    result_1.append(amplifier_program(len(sequence) - 1, sequence))
 print(max(result_1))
 
 
@@ -108,7 +112,7 @@ def feedback_loop(length, string):
     return actual_result
 
 
-result_2 = []
+'''result_2 = []
 for s in get_sequences('56789'):
     result_2.append(feedback_loop(len(s) - 1, s))
-print(max(result_2))
+print(max(result_2))'''

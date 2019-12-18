@@ -1,115 +1,27 @@
-def add_op(i, array):
-    index1, index2, index3 = array[i + 1], array[i + 2], array[i + 3]
-    if array[i] == 1:
-        array[index3] = array[index1] + array[index2]
-    elif array[i] == 101:
-        array[index3] = index1 + array[index2]
-    elif array[i] == 1001:
-        array[index3] = array[index1] + index2
-    elif array[i] == 1101:
-        array[index3] = index1 + index2
+def check_for_modes(array, number):
+    """
+    Function used to check the modes of an opcode to determine what the values of the parameters are
 
 
-def multiply_op(i, array):
-    index1, index2, index3 = array[i + 1], array[i + 2], array[i + 3]
-    if array[i] == 2:
-        array[index3] = array[index1] * array[index2]
-    elif array[i] == 102:
-        array[index3] = index1 * array[index2]
-    elif array[i] == 1002:
-        array[index3] = array[index1] * index2
-    elif array[i] == 1102:
-        array[index3] = index1 * index2
-
-
-def output_op(i, array):
-    index = array[i + 1]
-    if array[i] == 4:
-        return array[index]
-    elif array[i] == 104:
-        return index
-
-
-def jump_if_true(i, array):
-    index1, index2 = array[i + 1], array[i + 2]
-    if array[i] == 5:
-        if array[index1] != 0:
-            return array[index2]
-    elif array[i] == 105:
-        if index1 != 0:
-            return array[index2]
-    elif array[i] == 1105:
-        if index1 != 0:
-            return index2
-    elif array[i] == 1005:
-        if array[index1] != 0:
-            return index2
-    return None
-
-
-def jump_if_false(i, array):
-    index1, index2 = array[i + 1], array[i + 2]
-    if array[i] == 6:
-        if array[index1] == 0:
-            return array[index2]
-    elif array[i] == 106:
-        if index1 == 0:
-            return array[index2]
-    elif array[i] == 1106:
-        if index1 == 0:
-            return index2
-    elif array[i] == 1006:
-        if array[index1] == 0:
-            return index2
-    return None
-
-
-def less_than(i, array):
-    index1, index2, index3 = array[i + 1], array[i + 2], array[i + 3]
-    if array[i] == 7:
-        if array[index1] < array[index2]:
-            array[index3] = 1
+    """
+    index1, index2 = None, None
+    if number != len(array) - 1:
+        if number != len(array) - 2:
+            index1, index2 = array[number + 1], array[number + 2]
         else:
-            array[index3] = 0
-    elif array[i] == 107:
-        if index1 < array[index2]:
-            array[index3] = 1
+            index1 = array[number + 1]
+    parameters = []
+    s = str(array[number])
+    if len(s) == 1:
+        return [array[index1], array[index2]]
+    elif len(s) == 3:
+        return [index1, array[index2]]
+    elif len(s) == 4:
+        if s[1] == '1':
+            parameters.extend([index1, index2])
         else:
-            array[index3] = 0
-    elif array[i] == 1107:
-        if index1 < index2:
-            array[index3] = 1
-        else:
-            array[index3] = 0
-    elif array[i] == 1007:
-        if array[index1] < index2:
-            array[index3] = 1
-        else:
-            array[index3] = 0
-
-
-def equals(i, array):
-    index1, index2, index3 = array[i + 1], array[i + 2], array[i + 3]
-    if array[i] == 8:
-        if array[index1] == array[index2]:
-            array[index3] = 1
-        else:
-            array[index3] = 0
-    elif array[i] == 108:
-        if index1 == array[index2]:
-            array[index3] = 1
-        else:
-            array[index3] = 0
-    elif array[i] == 1108:
-        if index1 == index2:
-            array[index3] = 1
-        else:
-            array[index3] = 0
-    elif array[i] == 1008:
-        if array[index1] == index2:
-            array[index3] = 1
-        else:
-            array[index3] = 0
+            parameters.extend([array[index1], index2])
+        return parameters
 
 
 def intcode_computer(arr):
@@ -121,37 +33,41 @@ def intcode_computer(arr):
     input_int = 5
     n = 0
     while n < len(arr):
+        parameters = check_for_modes(arr, n)
         s = str(arr[n])
         if s[-1] == '1':
-            add_op(n, arr)
+            arr[arr[n + 3]] = parameters[0] + parameters[1]
             n += 4
         elif s[-1] == '2':
-            multiply_op(n, arr)
+            arr[arr[n + 3]] = parameters[0] * parameters[1]
             n += 4
         elif s == '3':
-            index = arr[n + 1]
-            arr[index] = input_int
+            arr[arr[n + 1]] = input_int
             n += 2
         elif s[-1] == '4':
-            print(output_op(n, arr))
+            print(parameters[0])
             n += 2
         elif s[-1] == '5':
-            instruction = jump_if_true(n, arr)
-            if instruction is not None:
-                n = instruction
+            if parameters[0] != 0:
+                n = parameters[1]
             else:
                 n += 3
         elif s[-1] == '6':
-            instruction = jump_if_false(n, arr)
-            if instruction is not None:
-                n = instruction
+            if parameters[0] == 0:
+                n = parameters[1]
             else:
                 n += 3
         elif s[-1] == '7':
-            less_than(n, arr)
+            if parameters[0] < parameters[1]:
+                arr[arr[n + 3]] = 1
+            else:
+                arr[arr[n + 3]] = 0
             n += 4
         elif s[-1] == '8':
-            equals(n, arr)
+            if parameters[0] == parameters[1]:
+                arr[arr[n + 3]] = 1
+            else:
+                arr[arr[n + 3]] = 0
             n += 4
         elif s == '99':
             return
