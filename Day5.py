@@ -4,24 +4,22 @@ def check_for_modes(array, number):
 
 
     """
-    index1, index2 = None, None
+    index1, index2 = 0, 0
     if number != len(array) - 1:
         if number != len(array) - 2:
             index1, index2 = array[number + 1], array[number + 2]
         else:
             index1 = array[number + 1]
-    parameters = []
     s = str(array[number])
     if len(s) == 1:
-        return [array[index1], array[index2]]
+        return [array[index1 % len(array)], array[index2 % len(array)]]
     elif len(s) == 3:
-        return [index1, array[index2]]
+        return [index1, array[index2 % len(array)]]
     elif len(s) == 4:
         if s[1] == '1':
-            parameters.extend([index1, index2])
+            return [index1, index2]
         else:
-            parameters.extend([array[index1], index2])
-        return parameters
+            return [array[index1 % len(array)], index2]
 
 
 def intcode_computer(arr):
