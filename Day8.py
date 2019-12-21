@@ -40,5 +40,16 @@ for i in range(width * height):
         if pixels[i] != '2':
             image += pixels[i]
             break
+image = ''
+for i in range(width * height):
+    image += get_image_pixel(i)
 
-print(image)
+message = []
+
+for i in range(0, len(image), width):
+    message.append(image[i:i + width])
+
+for string in message:
+    string = string.replace('0', ' ')
+    string = string.replace('1', '#')
+    print(string)
