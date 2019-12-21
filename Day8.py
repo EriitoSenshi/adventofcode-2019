@@ -26,6 +26,16 @@ def get_digits(digit):
     return digit_count_array
 
 
+def get_image_pixel(index):
+    """
+    Function used to get the first non-transparent pixel in the index of an image
+
+
+    """
+    for pixels in layers:
+        if pixels[index] != '2':
+            return pixels[index]
+
 # Part 1
 zeros, ones, twos = get_digits(0), get_digits(1), get_digits(2)
 min_zeros = min(zeros)
@@ -34,12 +44,6 @@ result = ones[zeros.index(min_zeros)] * twos[zeros.index(min_zeros)]
 print(result)
 
 # Part 2
-image = ''
-for i in range(width * height):
-    for pixels in layers:
-        if pixels[i] != '2':
-            image += pixels[i]
-            break
 image = ''
 for i in range(width * height):
     image += get_image_pixel(i)
