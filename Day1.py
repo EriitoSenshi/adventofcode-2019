@@ -1,6 +1,5 @@
 import math
 
-
 def get_fuel_sum(mass):
     """
     Function that returns the fuel required of a module based on its mass
@@ -8,10 +7,12 @@ def get_fuel_sum(mass):
 
     """
     fuel_sum = 0
+
     while mass >= 0:
         mass = math.floor(mass / 3) - 2
         if mass > 0:
             fuel_sum += mass
+
     return fuel_sum
 
 
@@ -29,5 +30,6 @@ for module in f:
     # This represents part 2, which is getting the actual fuel required
     fuel_required_2 = get_fuel_sum(float(module))
     fuel_total_2 += fuel_required_2
+
 f.close()
 print(fuel_total_1, fuel_total_2)

@@ -1,4 +1,4 @@
-from sympy import Segment, intersection
+from sympy import Segment, intersection, Point2D
 
 
 # This class represents a wire. It has a set of coordinates and segments
@@ -13,19 +13,22 @@ class Wire:
         if movement[0] == 'U':
             self.y += int(movement[1:])
             self.coordinates.append((self.x, self.y))
+
         elif movement[0] == 'D':
             self.y -= int(movement[1:])
             self.coordinates.append((self.x, self.y))
+
         elif movement[0] == 'R':
             self.x += int(movement[1:])
             self.coordinates.append((self.x, self.y))
+
         elif movement[0] == 'L':
             self.x -= int(movement[1:])
             self.coordinates.append((self.x, self.y))
 
     def add_segments(self):
         for i in range(len(self.coordinates) - 1):
-            self.segments.append(Segment(self.coordinates[i], self.coordinates[i + 1]))
+            self.segments.append(Segment(Point2D(self.coordinates[i]), Point2D(self.coordinates[i + 1])))
 
     def get_intersections(self, wire):
         inters = []
@@ -39,12 +42,14 @@ class Wire:
 # Retrieving the data
 f = open('inputs/day3.txt', 'r')
 movements = []
+
 for line in f:
     path = []
     line = line.strip('\n').split(',')
     for p in line:
         path.append(p)
     movements.append(path)
+
 f.close()
 
 wire1 = Wire()
@@ -52,6 +57,7 @@ wire2 = Wire()
 
 for movement1 in movements[0]:
     wire1.move(movement1)
+
 for movement2 in movements[1]:
     wire2.move(movement2)
 
@@ -87,4 +93,5 @@ for inter in intersections:
             path_length_2 += segment_2.length
 
     distances_part_2.append(path_length_1 + path_length_2)
+
 print(min(distances_part_2))

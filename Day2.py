@@ -28,11 +28,14 @@ def intcode_computer(arr):
         if arr[n] == 1:
             index1, index2, index3 = arr[n + 1], arr[n + 2], arr[n + 3]
             arr[index3] = arr[index1] + arr[index2]
+
         elif arr[n] == 2:
             index1, index2, index3 = arr[n + 1], arr[n + 2], arr[n + 3]
             arr[index3] = arr[index1] * arr[index2]
+
         elif arr[n] == 99:
             return arr[0]
+
     return arr[0]
 
 
@@ -45,6 +48,7 @@ for i in range(100):
         int_code_2[1] = i
         int_code_2[2] = j
         result = intcode_computer(int_code_2)
+
         if result == 19690720:
             total = 100 * int_code_2[1] + int_code_2[2]
             print(total)

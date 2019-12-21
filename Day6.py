@@ -34,16 +34,20 @@ def count_orbits(o):
 # Retrieving the objects using a dictionary
 objects = {}
 f = open('inputs/day6.txt', 'r')
+
 for line in f:
     line = line.strip('\n').split(')')
     obj_name_1 = line[0]
     obj_name_2 = line[1]
+
     if obj_name_1 not in objects:
         objects[obj_name_1] = Obj(obj_name_1)
+
     if obj_name_2 not in objects:
         objects[obj_name_2] = Obj(obj_name_2)
     objects[obj_name_1].add_orbit(objects[obj_name_2])
     objects[obj_name_2].orbit_of = objects[obj_name_1]
+
 f.close()
 # Part 1: Counting all the direct and indirect connections for the whole graph of orbits
 counter = 0
